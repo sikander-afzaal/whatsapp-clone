@@ -1,0 +1,26 @@
+.sidechat {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid #f6f6f6;
+  cursor: pointer;
+  padding: 20px;
+}
+.sidechat:hover {
+  background-color: #ebebeb;
+}
+.sidechat .room-info {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-left: 15px;
+}
+.room-info h1 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.room-info p {
+  font-size: 0.9rem;
+}
