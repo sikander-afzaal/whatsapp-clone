@@ -4,12 +4,12 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import React, { useEffect, useState } from "react";
 import "./Sidebar.css";
 import SideChat from "./SideChat";
-import { db } from "../firebase";
+import db from "../firebase";
 function Sidebar() {
   const [rooms, setRooms] = useState([]);
   useEffect(() => {
     // getting data of rooms from db
-    db.collection("Rooms").onSnapshot((snapshot) => {
+    const unsubscribe = db.collection("Rooms").onSnapshot((snapshot) => {
       setRooms(
         snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -17,6 +17,10 @@ function Sidebar() {
         }))
       );
     });
+    //
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return (

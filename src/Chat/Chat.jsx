@@ -4,21 +4,34 @@ import "./Chat.css";
 import { AttachFile, InsertEmoticon, Mic, MoreVert } from "@mui/icons-material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { IconButton } from "@mui/material";
+import { useParams } from "react-router-dom";
+import db from "../firebase";
 function Chat() {
+  const { roomId } = useParams();
   const [seed, setSeed] = useState("lol");
   const [input, setInput] = useState("");
-  useEffect(() => {
-    setSeed(Math.floor(Math.random() * 10000));
-  }, []);
+  const [roomName, setRoomName] = useState("");
+
   const sendMessage = (e) => {
+    // for the text input (messages that we type)
     e.preventDefault();
   };
+  //fetching data from db using the id in the url which is passed through the sidebar component
+  useEffect(() => {
+    if (roomId) {
+      db.collection("Rooms")
+        .doc(roomId)
+        .onSnapshot((snapshot) => setRoomName(snapshot.data().name));
+      setSeed(Math.floor(Math.random() * 10000));
+    }
+  }, [roomId]);
+
   return (
     <div className="chat">
       <div className="chat__top">
         <Avatar src={`https://avatars.dicebear.com/api/male/${seed}.svg`} />
         <div className="chat-info">
-          <h3>Room Name</h3>
+          <h3>{roomName}</h3>
           <p>last seen at</p>
         </div>
         <div className="icon-cont">
