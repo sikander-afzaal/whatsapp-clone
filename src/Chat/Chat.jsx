@@ -10,6 +10,9 @@ function Chat() {
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 10000));
   }, []);
+  const sendMessage = (e) => {
+    e.preventDefault();
+  };
   return (
     <div className="chat">
       <div className="chat__top">
@@ -57,7 +60,9 @@ function Chat() {
             type="text"
             placeholder="Type a message"
           />
-          <button type="submit">Submit</button>
+          <button onClick={sendMessage} type="submit">
+            Submit
+          </button>
         </form>
         <IconButton>
           <Mic />
