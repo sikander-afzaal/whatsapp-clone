@@ -14,7 +14,7 @@ function Chat() {
   const [input, setInput] = useState("");
   const [roomName, setRoomName] = useState("");
   const [messages, setMessages] = useState([]);
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user }] = useStateValue();
 
   const sendMessage = (e) => {
     // for the text input (messages that we type)
@@ -56,7 +56,14 @@ function Chat() {
         <Avatar src={`https://avatars.dicebear.com/api/male/${seed}.svg`} />
         <div className="chat-info">
           <h3>{roomName}</h3>
-          <p>last seen at</p>
+          <p>
+            {
+              //selecting last sent message and then viewing its time
+              new Date(
+                messages[messages.length - 1]?.timestamp?.toDate()
+              ).toUTCString()
+            }
+          </p>
         </div>
         <div className="icon-cont">
           <IconButton>
