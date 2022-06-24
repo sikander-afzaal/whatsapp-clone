@@ -7,7 +7,7 @@ import SideChat from "./SideChat";
 import db from "../firebase";
 import useStateValue from "../Context/authContext";
 function Sidebar() {
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user }, dispatch] = useStateValue(); //React context api accessing state
   const [rooms, setRooms] = useState([]);
   useEffect(() => {
     // getting data of rooms from db

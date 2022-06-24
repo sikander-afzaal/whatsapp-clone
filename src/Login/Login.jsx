@@ -6,6 +6,7 @@ import useStateValue from "../Context/authContext";
 import { actionTypes } from "../Context/reducer";
 function Login() {
   const [{}, dispatch] = useStateValue();
+  //authentication method
   const signIn = () => {
     auth
       .signInWithPopup(provider)
@@ -14,7 +15,7 @@ function Login() {
       )
       .catch((error) => alert(error.message));
   };
-
+  //
   return (
     <div className="login">
       <img

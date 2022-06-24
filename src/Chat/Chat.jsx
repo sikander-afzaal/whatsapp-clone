@@ -5,24 +5,48 @@ import { AttachFile, InsertEmoticon, Mic, MoreVert } from "@mui/icons-material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { IconButton } from "@mui/material";
 import { useParams } from "react-router-dom";
+import useStateValue from "../Context/authContext";
 import db from "../firebase";
+import firebase from "firebase/compat/app";
 function Chat() {
   const { roomId } = useParams();
   const [seed, setSeed] = useState("lol");
   const [input, setInput] = useState("");
   const [roomName, setRoomName] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [{ user }, dispatch] = useStateValue();
 
   const sendMessage = (e) => {
     // for the text input (messages that we type)
     e.preventDefault();
+    db.collection("Rooms").doc(roomId).collection("messages").add({
+      name: user.displayName,
+      message: input,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    setInput("");
   };
   //fetching data from db using the id in the url which is passed through the sidebar component
   useEffect(() => {
     if (roomId) {
+      //getting names of rooms
       db.collection("Rooms")
         .doc(roomId)
         .onSnapshot((snapshot) => setRoomName(snapshot.data().name));
+      //seed for avatar
       setSeed(Math.floor(Math.random() * 10000));
+      //getting messages of rooms
+      db.collection("Rooms")
+        .doc(roomId)
+        .collection("messages") // going to messages collection of that room
+        .orderBy("timestamp", "asc")
+        .onSnapshot((snapshot) =>
+          setMessages(
+            snapshot.docs.map((doc) => {
+              return doc.data();
+            })
+          )
+        );
     }
   }, [roomId]);
 
@@ -47,18 +71,20 @@ function Chat() {
         </div>
       </div>
       <div className="chat__mid">
-        <p className={`chat-message ${true ? "chat-reciever" : ""}`}>
-          <span className="name-chat">Sikander Afzaal</span> Hey Guys
-          <span className="chat-time">3:27</span>
-        </p>
-        <p className={`chat-message ${false ? "chat-reciever" : ""}`}>
-          <span className="name-chat">Sikander Afzaal</span> Hey Guys
-          <span className="chat-time">3:27</span>
-        </p>
-        <p className={`chat-message ${true ? "chat-reciever" : ""}`}>
-          <span className="name-chat">Sikander Afzaal</span> Hey Guys
-          <span className="chat-time">3:27</span>
-        </p>
+        {messages.map((elem) => {
+          return (
+            <p
+              className={`chat-message ${
+                user.displayName === elem?.name ? "chat-reciever" : ""
+              }`}
+            >
+              <span className="name-chat">{elem?.name}</span> {elem?.message}
+              <span className="chat-time">
+                {new Date(elem.timestamp?.toDate()).toUTCString()}
+              </span>
+            </p>
+          );
+        })}
       </div>
       <div className="chat__bottom">
         <IconButton>
